@@ -14,13 +14,23 @@ class Enemy extends Ship {
 }
 
 class Wave extends GameObject{
-    constructor(config, ai) {
+    constructor(config, ai, shipCount) {
         super();
         this.ships = config.colors.map(image => new Enemy(image, ai));
         this.activeShips = [];
 
         this.launchDelay = 1000.0; // 1 second.
         this.launchIteration = 2000.0; // 2 seconds.
+
+        this.generateShips(config, ai, shipCount)
+    }
+
+    generateShips(config, ai, shipCount) {
+        this.ships = []
+        for (var i = 0; i < shipCount; i++) {
+            var image = config.colors[i % config.colors.length];
+            this.ships.push(new Enemy(image, ai));
+        } 
     }
 
     update(game, elapsed, timeStamp) {
@@ -38,6 +48,11 @@ class Wave extends GameObject{
                 game.addObject(ship);
                 this.activeShips.push(ship);
             }
+        }
+
+        if (!this.ships.some(i => !i.isDead)) {
+            this.isDead = true;
+            game.loadNextWave();
         }
 
         this.activeShips.forEach(i => i.update(game, elapsed, timeStamp));

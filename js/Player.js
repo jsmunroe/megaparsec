@@ -68,7 +68,7 @@ class Player extends Ship{
         this.y = Math.constrain(this.y, 0, game.canvas.height - this.height);
     }
 
-    collide(game) {
+    collide(game, other) {
 
     }
 }
@@ -92,7 +92,7 @@ class Shot extends InirtialGameObject {
         super.update(game, elapsed, timeStamp);
     }
 
-    collide(other) {
+    collide(game, other) {
         if (other instanceof Player) {
             return;
         }
