@@ -12,8 +12,6 @@ class Canvas {
         this._canvas = canvas;
         this._container = this._options.container || window;
 
-        this._sprites = [];
-
         var self = this;
         this._options.container.addEventListener('resize', event => self.onResize(event));
 
@@ -59,19 +57,7 @@ class Canvas {
         this._options.scaleHeight = null;
     }
 
-    addSprite(sprite) {
-        if (!sprite || this._sprites.hasId(sprite.id)) {
-            return; // Sprite already added.
-        }
-
-        this._sprites.push(sprite);
-    }
-
-    removeSprite(sprite) {
-        sprite && this._sprites.removeId(sprite.id);
-    }
-
-    draw(timeStamp) {
+    draw(drawables) {
         self = this;
 
         var ctx = this._canvas.getContext('2d');
@@ -84,12 +70,9 @@ class Canvas {
 
         ctx.fillRect(0, 0, this.width, this.height) // Clear;
 
-        //ctx.strokeRect(5, 5, this.width - 10, this.height - 10);
-
-        for (var i = 0; i < this._sprites.length; i++) {
-            var sprite = this._sprites[i];
-
-            sprite.draw(ctx);
+        for (var i = 0; i < drawables.length; i++) {
+            var drawable = drawables[i];
+            drawable.draw(ctx);
         }
 
         ctx.restore();
@@ -122,3 +105,5 @@ class Sprite {
         ctx.restore();
     }
 }
+
+

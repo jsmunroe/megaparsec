@@ -7,10 +7,24 @@ class Game {
     load() {
         this.keyboard = new Keyboard();
 
+        this.addObject(new StarField(this.canvas, 200));
+
         this.player = new Player(this);
         this.addObject(this.player);
 
-        this.enemy = new Wave(Config.enemies[0], new SwoopAi(this));
+        this.loadNextWave();
+    }
+
+    loadNextWave() {
+        if (this.currentWaveIndex == undefined) {
+            this.currentWaveCount = 0;
+            this.currentWaveIndex = -1;
+        }
+
+        this.currentWaveCount += 3;
+        this.currentWaveIndex++;
+
+        this.enemy = new Wave(Config.enemies[this.currentWaveIndex % Config.enemies.length], new SwoopAi(this), this.currentWaveCount);
         this.addObject(this.enemy);
     }
 
@@ -39,11 +53,11 @@ class Game {
 
         this.collectTheDead();
         this.getCollisions().forEach(i => {
-            i.first.collide(i.second);
-            i.second.collide(i.first);
+            i.first.collide(this, i.second);
+            i.second.collide(this, i.first);
         })
 
-        this.canvas.draw(elapsed);       
+        this.canvas.draw(this._gameObjects);
     }
 
     addObject(gameObject) {
@@ -51,12 +65,15 @@ class Game {
             return; // Already added.
         }
 
-        this.canvas.addSprite(gameObject.sprite);
         this._gameObjects.push(gameObject);
     }
 
+    killObject(gameObject) {
+        this.addObject(new Explosion(gameObject, 200));
+        gameObject.isDead = true;
+    }
+
     removeObject(gameObject) {
-        this.canvas.removeSprite(gameObject.sprite);
         this._gameObjects.removeId(gameObject.id);
     }
 
@@ -67,6 +84,10 @@ class Game {
             for (var j = i + 1; j < this._gameObjects.length; j++) {
                 var first = this._gameObjects[i];
                 var second = this._gameObjects[j];
+
+                if (!first.isSolid || !second.isSolid) {
+                    continue;
+                }
 
                 if (first.collidesWith(second)) {
                     collisions.push({
@@ -101,17 +122,15 @@ class GameObject {
         this.isDead = false;
     }
 
-    get sprite() {
-        return null;
-    }
-
     collidesWith(other) {
         return false;
     }
 
     update(game, elapsed, timeStamp) { }
 
-    collide(other) { }
+    draw(ctx) { }
+
+    collide(game, other) { }
 }
 
 GameObject.nextId = 0;
@@ -120,7 +139,11 @@ class InirtialGameObject extends GameObject {
     constructor(image) {
         super();
 
-        this._sprite = new Sprite(image, 0, 0, 30, 15);
+        if (image) {
+            this._sprite = new Sprite(image, 0, 0, 30, 15);
+        } else {
+            this._sprite = { x: 0, y: 0, width: 30, height: 15 }
+        }
 
         this.maxVelocityX = 5000.0;
         this.maxVelocityY = 2.0;
@@ -131,6 +154,8 @@ class InirtialGameObject extends GameObject {
 
         this.velocityX = 0.0;
         this.velocityY = 0.0;
+
+        this.isSolid = true;
 
         this.x = 100;
         this.y = 100;
@@ -168,10 +193,6 @@ class InirtialGameObject extends GameObject {
         this._sprite.height = value;
     }
 
-    get sprite() {
-        return this._sprite;
-    }
-
     collidesWith(other) {
         if (!other instanceof InirtialGameObject) {
             return false;
@@ -202,5 +223,11 @@ class InirtialGameObject extends GameObject {
         }
 
         this.y = Math.constrain(this.y, 0, game.canvas.height - this.height);
+    }
+
+    draw(ctx) {
+        if (this._sprite.draw) {
+            this._sprite.draw(ctx);
+        }
     }
 }

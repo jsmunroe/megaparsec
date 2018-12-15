@@ -3,7 +3,8 @@ class Ship extends InirtialGameObject {
         super(image);
     }
 
-    collide(other) {
+    collide(game, other) {
+        game.killObject(this);
         this.isDead = true;
     }
 }
@@ -21,7 +22,7 @@ class Ai {
 
         ship.y = zoneTop + (Math.random() * zoneHeight);
         ship.velocityX = -100.0;
-        ship.maxVelocityY = 100.0;
+        ship.maxVelocityY = 500.0;
         ship.accelerationX = -0.01;
     }
 
