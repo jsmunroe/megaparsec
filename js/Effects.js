@@ -27,14 +27,15 @@ class StarField extends Effect {
         this._stars = []
 
         for (var i = 0; i < starCount; i++) {
-            var velocity = Math.random() * 500;
+            var rand = Math.random();
+            var velocity = 75 + 10 * rand;
 
             this._stars.push({
                 x: Math.random() * this.width,
                 y: Math.random() * this.height,
                 velocityX: -velocity,
                 color: this.getRandomColor(),
-                radius: Math.random() * 1
+                radius: rand * 0.5
             });
         }
     }
