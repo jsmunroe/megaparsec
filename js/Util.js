@@ -23,6 +23,8 @@ Math.constrain = function(value, min, max) {
     return Math.max(min, Math.min(value, max));
 }
 
+Math.halfPI = Math.PI * 0.5;
+
 class Keyboard {
     constructor() {
         this.handlers = [];

@@ -69,7 +69,9 @@ class Player extends Ship{
     }
 
     collide(game, other) {
-
+        if (other instanceof Shot == false) {
+            super.collide(game, other);
+        }
     }
 }
 
