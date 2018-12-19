@@ -98,6 +98,10 @@ class Shot extends InirtialGameObject {
         if (other instanceof Player) {
             return;
         }
+
+        if (other.pointValue) {
+            game.scoreObject(other);
+        }
         
         this.isDead = true;
     }

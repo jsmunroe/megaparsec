@@ -5,9 +5,12 @@ class Game {
     }
 
     load() {
+        this.score = 0;
+
         this.keyboard = new Keyboard();
 
         this.addObject(new StarField(this.canvas, 200));
+        this.addObject(new Hud(this));
 
         this.player = new Player(this);
         this.addObject(this.player);
@@ -66,6 +69,14 @@ class Game {
         }
 
         this._gameObjects.push(gameObject);
+    }
+
+    scoreObject(gameObject) {
+        if (gameObject.pointValue) {
+            this.score += gameObject.pointValue;
+        }
+
+        this.addObject(new Score(gameObject, gameObject.pointValue));
     }
 
     killObject(gameObject) {

@@ -3,6 +3,8 @@ class Enemy extends Ship {
     constructor(image, ai) {
         super(image);
 
+        this.pointValue = 200;
+
         this.ai = ai;
         this.ai.init(this);
     }
