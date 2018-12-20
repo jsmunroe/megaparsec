@@ -69,7 +69,9 @@ class Player extends Ship{
     }
 
     collide(game, other) {
-
+        if (other instanceof Shot == false) {
+            super.collide(game, other);
+        }
     }
 }
 
@@ -95,6 +97,10 @@ class Shot extends InirtialGameObject {
     collide(game, other) {
         if (other instanceof Player) {
             return;
+        }
+
+        if (other.pointValue) {
+            game.scoreObject(other);
         }
         
         this.isDead = true;

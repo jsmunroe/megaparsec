@@ -3,6 +3,8 @@ class Enemy extends Ship {
     constructor(image, ai) {
         super(image);
 
+        this.pointValue = 200;
+
         this.ai = ai;
         this.ai.init(this);
     }
@@ -16,7 +18,6 @@ class Enemy extends Ship {
 class Wave extends GameObject{
     constructor(config, ai, shipCount) {
         super();
-        this.ships = config.colors.map(image => new Enemy(image, ai));
         this.activeShips = [];
 
         this.launchDelay = 1000.0; // 1 second.

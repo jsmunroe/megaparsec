@@ -27,14 +27,15 @@ class StarField extends Effect {
         this._stars = []
 
         for (var i = 0; i < starCount; i++) {
-            var velocity = Math.random() * 500;
+            var rand = Math.random();
+            var velocity = 75 + 10 * rand;
 
             this._stars.push({
                 x: Math.random() * this.width,
                 y: Math.random() * this.height,
                 velocityX: -velocity,
                 color: this.getRandomColor(),
-                radius: Math.random() * 1
+                radius: rand * 0.5
             });
         }
     }
@@ -75,7 +76,7 @@ class Explosion extends Effect {
         this.velocityX = origin.velocityX;
         this.velocityY = origin.velocityY;
 
-        this.durration = 1000.0; // Miliseconds
+        this.durration = 750.0; // Miliseconds
 
         this.generateParticles(particleCount || 100);
     }
@@ -113,8 +114,8 @@ class Explosion extends Effect {
         }
 
         this._particles.forEach(i => {
-            i.x += (i.velocityX * this.alpha) * elapsed / 1000.0;
-            i.y += (i.velocityY * this.alpha) * elapsed / 1000.0;
+            i.x += (i.velocityX) * elapsed / 1000.0;
+            i.y += (i.velocityY) * elapsed / 1000.0;
         });
 
         this.x += this.velocityX * elapsed / 1000.0;
