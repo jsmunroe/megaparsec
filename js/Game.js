@@ -2,12 +2,13 @@ class Game {
     constructor(canvas) {
         this.canvas = canvas;
         this._gameObjects = [];
+
+        this.keyboard = new Keyboard();
+        this.keyboard.keys(Config.keys.pause, () => this.togglePause());
     }
 
     load() {
         this.score = 0;
-
-        this.keyboard = new Keyboard();
 
         this.addObject(new StarField(this.canvas, 200));
         this.addObject(new Hud(this));
@@ -16,6 +17,27 @@ class Game {
         this.addObject(this.player);
 
         this.loadNextWave();
+    }
+
+    pause() {
+        if (this.isPaused) {
+            return;
+        }
+
+        this.isPaused = true;
+    }
+
+    unpause() {
+        if (!this.isPaused) {
+            return;
+        }
+
+        this.isPaused = false;
+        this.wasPaused = true;
+    }
+
+    togglePause() {
+        this.isPaused ? this.unpause() : this.pause();
     }
 
     loadNextWave() {
@@ -32,6 +54,12 @@ class Game {
     }
 
     getElapsed(timeStamp) {
+        if (this.wasPaused) {
+            this.lastTimeStamp = timeStamp;
+            this.wasPaused = false;
+            return 0;
+        }
+
         if (!this.lastTimeStamp) {
             this.lastTimeStamp = timeStamp;
         }
@@ -45,12 +73,14 @@ class Game {
     update(timeStamp) {
         requestAnimationFrame(ts => this.update(ts)); // request next frame
 
-        var elapsed = this.getElapsed(timeStamp);
+        if (!this.isPaused) {
+            var elapsed = this.getElapsed(timeStamp);
 
-        for (var i = 0; i < this._gameObjects.length; i++) {
-            var gameObject = this._gameObjects[i];
-            if (!gameObject.isDead) {
-                gameObject.update(this, elapsed, timeStamp);
+            for (var i = 0; i < this._gameObjects.length; i++) {
+                var gameObject = this._gameObjects[i];
+                if (!gameObject.isDead) {
+                    gameObject.update(this, elapsed, timeStamp);
+                }
             }
         }
 

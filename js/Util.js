@@ -62,11 +62,24 @@ class Keyboard {
         return !!this.currentKeys[keyCode];
     }
 
+    keys(keyCodes, callback) {
+        if (!keyCodes.length) {
+            return this.key(keyCodes, callback);
+        }
+
+        var allPressed = true;
+        for (let i = 0; i < keyCodes.length; i++) {
+            allPressed = allPressed && this.key(keyCodes[i], callback);
+        }
+
+        return allPressed;
+    }
+
     onKeyDown(event) {
         var handlers = this.handlers.filter(i => i.keyCode === event.code);
 
         for (var i = 0; i < handlers.length; i++) {
-            handlers.callback(event);
+            handlers[i].callback(event);
         }
 
         this.currentKeys[event.code] = true;

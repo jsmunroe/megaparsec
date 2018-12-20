@@ -18,6 +18,31 @@ class Hud extends GameObject{
     }
 }
 
+class Message extends GameObject {
+    constructor(game, messageText) {
+        super();
+        this.game = game;
+        this.messageText = messageText;
+    }
+
+    draw(ctx) {
+        ctx.save();
+
+        var fontheight = 40;
+
+        ctx.globalAlpha = this.alpha;
+
+        ctx.fillStyle = '#AAA';
+        ctx.font = '40px Arial';
+        
+        var textBounds = ctx.measureText(this.value);
+        ctx.fillText(this.value, this.game.canvas.width / 2 - textBounds.width / 2, this.game.canvas.height / 2 - fontheight / 2);
+
+        ctx.restore();
+    }
+
+}
+
 class Score extends GameObject {
     constructor(origin, value) {
         super();

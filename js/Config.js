@@ -14,5 +14,8 @@ var Config = {
                 './img/enemy1.orange.png'
             ]
         }
-    ]
+    ],
+    keys: {
+        pause: ['KeyP', 'Pause']
+    }
 }
