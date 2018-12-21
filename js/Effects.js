@@ -140,3 +140,84 @@ class Explosion extends Effect {
         ctx.restore();
     }
 }
+
+class Hills extends Effect {
+    constructor(canvas) {
+        super();
+        this.canvas = canvas;
+        this.maxHillHeight = 150;
+        this.minHillHeight = 50;
+        this.maxHillWidth = 300;
+        this.minHillWidth = 150;
+        this._hills = [];
+
+        this.generateHills();
+    }
+
+
+    generateHills(hillX) {
+        var hillX = hillX || -this.maxHillWidth;
+
+        while (hillX <= this.canvas.width + this.maxHillWidth) {
+            var height = Random.getBetween(this.minHillHeight, this.maxHillHeight);
+            var width = Random.getBetween(this.minHillWidth, this.maxHillWidth);
+            var velocity = -Random.getBetween(90, 90);
+
+            this._hills.push({
+                start: hillX,
+                width: width,
+                height: height,
+                color: '#183502',
+                velocity: velocity
+            })
+
+            hillX += width;
+        }
+        
+        this.hills
+    }
+
+    update(game, elapsed, totalElapsed) {
+        var hillsToKeep = [];
+
+        for (let i = 0; i < this._hills.length; i++) {
+            const hill = this._hills[i];
+            
+            if (hill.start + hill.width > 0) {
+                hill.start += hill.velocity * elapsed / 1000.0;
+                hillsToKeep.push(hill);
+            }
+        }
+
+        this._hills = hillsToKeep;
+
+        var hillX = -this.maxHillWidth;
+        if (this._hills.length) {
+            const hill = this._hills[this._hills.length - 1];
+            hillX = hill.start + hill.width;
+        }
+
+        this.generateHills(hillX);
+    }
+
+    draw(ctx) {
+        var canvasHeight = this.canvas.height;
+        var canvasWidth = this.canvas.width;
+
+        ctx.save();
+
+        for (let i = 0; i < this._hills.length; i++) {
+            const hill = this._hills[i];
+            
+            ctx.beginPath();
+            ctx.fillStyle = hill.color;
+
+            ctx.moveTo(hill.start - hill.width * 0.3, canvasHeight + 10);
+            ctx.lineTo(hill.start + hill.width * 0.5, canvasHeight - hill.height);
+            ctx.lineTo(hill.start + hill.width * 1.3, canvasHeight + 10);
+
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+}

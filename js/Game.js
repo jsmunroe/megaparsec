@@ -11,6 +11,7 @@ class Game {
         this.score = 0;
 
         this.addObject(new StarField(this.canvas, 200));
+        this.addObject(new Hills(this.canvas));
         this.addObject(new Hud(this));
 
         this.player = new Player(this);
