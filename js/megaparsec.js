@@ -7,4 +7,11 @@ $(function() {
     });
 
     var game = Game.build(canvas);
+
+    window.addEventListener('blur', () => {
+        if (!game.isPaused) {
+            game.pause();
+        }
+    });
+
 });

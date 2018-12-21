@@ -25,6 +25,9 @@ class Game {
         }
 
         this.isPaused = true;
+
+        this.pauseMessage = new Message(this, 'Game Paused');
+        this.addObject(this.pauseMessage);
     }
 
     unpause() {
@@ -34,6 +37,8 @@ class Game {
 
         this.isPaused = false;
         this.wasPaused = true;
+
+        this.pauseMessage.kill();
     }
 
     togglePause() {
@@ -161,6 +166,10 @@ class GameObject {
         this.id = GameObject.nextId++;
 
         this.isDead = false;
+    }
+
+    kill() {
+        this.isDead = true;
     }
 
     collidesWith(other) {

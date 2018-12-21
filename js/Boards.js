@@ -30,13 +30,11 @@ class Message extends GameObject {
 
         var fontheight = 40;
 
-        ctx.globalAlpha = this.alpha;
-
         ctx.fillStyle = '#AAA';
         ctx.font = '40px Arial';
         
-        var textBounds = ctx.measureText(this.value);
-        ctx.fillText(this.value, this.game.canvas.width / 2 - textBounds.width / 2, this.game.canvas.height / 2 - fontheight / 2);
+        var textBounds = ctx.measureText(this.messageText);
+        ctx.fillText(this.messageText, this.game.canvas.width / 2 - textBounds.width / 2, this.game.canvas.height / 2 - fontheight / 2);
 
         ctx.restore();
     }
