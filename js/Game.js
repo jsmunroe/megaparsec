@@ -14,10 +14,14 @@ class Game {
         this.addObject(new Hills(this.canvas));
         this.addObject(new Hud(this));
 
-        this.player = new Player(this);
-        this.addObject(this.player);
+        this.loadPlayer();
 
         this.loadNextWave();
+    }
+
+    loadPlayer() {
+        this.player = new Player(this);
+        this.addObject(this.player);
     }
 
     pause() {
@@ -118,6 +122,10 @@ class Game {
     killObject(gameObject) {
         this.addObject(new Explosion(gameObject, 200));
         gameObject.isDead = true;
+
+        if (gameObject instanceof Player) {
+            setTimeout(() => this.loadPlayer(), 1000);
+        }
     }
 
     removeObject(gameObject) {
@@ -210,6 +218,8 @@ class InirtialGameObject extends GameObject {
 
         this.x = 100;
         this.y = 100;
+
+        this.alpha = 1;
     }
 
     get x() {
@@ -277,8 +287,12 @@ class InirtialGameObject extends GameObject {
     }
 
     draw(ctx) {
+        ctx.save();
+        this._sprite.opacity = this.alpha;
+        
         if (this._sprite.draw) {
             this._sprite.draw(ctx);
         }
+        ctx.restore();
     }
 }

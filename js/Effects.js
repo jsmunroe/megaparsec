@@ -8,10 +8,14 @@ class Effect extends InirtialGameObject {
         var letters = '89ABCDEF';
         var color = '#';
         for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * letters.length)];
+            color += letters[Random.nextInt(letters.length)];
         }
         return color;
       }
+
+    getRandomShade(base, minShade, maxShade) {
+        return Color.lum(base, Random.getBetween(minShade, maxShade));
+    }
 }
 
 class StarField extends Effect {
@@ -27,15 +31,16 @@ class StarField extends Effect {
         this._stars = []
 
         for (var i = 0; i < starCount; i++) {
-            var rand = Math.random();
-            var velocity = 75 + 10 * rand;
+            var rand = Random.next();
+            var velocity = 0; //75 + 10 * rand;
 
             this._stars.push({
-                x: Math.random() * this.width,
-                y: Math.random() * this.height,
+                x: Random.next(this.width),
+                y: Random.next(this.height),
                 velocityX: -velocity,
                 color: this.getRandomColor(),
-                radius: rand * 0.5
+                radius: rand * 0.5,
+                twinkle: Random.nextInt(5) === 1 ? 0 : 1
             });
         }
     }
@@ -44,6 +49,10 @@ class StarField extends Effect {
         this._stars.forEach(i => {
             i.x += i.velocityX * elapsed / 1000.0;
         
+            if (Random.nextInt(500) === 1) {
+                i.twinkle = i.twinkle === 0 ? 1 : 0;
+            }
+
             if (i.velocityX < 0 && i.x < -i.radius) {
                 i.x = this.width + i.radius;
             } else if (i.velocityX > 0 && i.x > this.width + i.radius) {
@@ -57,10 +66,15 @@ class StarField extends Effect {
         ctx.save();
 
         this._stars.forEach(i => {
-            ctx.fillStyle = i.color;
-            ctx.beginPath();
-            ctx.arc(i.x, i.y, i.radius, 0, 2 * Math.PI);
-            ctx.fill();
+
+            if (i.twinkle) {
+
+                ctx.fillStyle = i.color;
+                ctx.beginPath();
+                ctx.arc(i.x, i.y, i.radius, 0, 2 * Math.PI);
+                ctx.fill();
+
+            }
 
         });
 
@@ -85,8 +99,8 @@ class Explosion extends Effect {
         this._particles = [];
 
         for (var i = 0; i < particleCount; i++) {
-            var angle = Math.random() * Math.PI * 2;
-            var velocity = Math.random() * 100;
+            var angle = Random.next(Math.PI * 2);
+            var velocity = Random.next(100);
 
             this._particles.push({
                 x: 0,
@@ -94,7 +108,7 @@ class Explosion extends Effect {
                 velocityX: Math.cos(angle) * velocity,
                 velocityY: Math.sin(angle) * velocity,
                 color: this.getRandomColor(),
-                radius: Math.random() * 2
+                radius: Random.next(2)
             });
         }
     }
@@ -145,9 +159,9 @@ class Hills extends Effect {
     constructor(canvas) {
         super();
         this.canvas = canvas;
-        this.maxHillHeight = 150;
+        this.maxHillHeight = 200;
         this.minHillHeight = 50;
-        this.maxHillWidth = 300;
+        this.maxHillWidth = 250;
         this.minHillWidth = 150;
         this._hills = [];
 
@@ -161,21 +175,26 @@ class Hills extends Effect {
         while (hillX <= this.canvas.width + this.maxHillWidth) {
             var height = Random.getBetween(this.minHillHeight, this.maxHillHeight);
             var width = Random.getBetween(this.minHillWidth, this.maxHillWidth);
-            var velocity = -Random.getBetween(90, 90);
+            var depth = Random.next(10);
+            var velocity = -200 + depth;
 
-            this._hills.push({
+            var hill = {
                 start: hillX,
                 width: width,
                 height: height,
-                color: '#183502',
-                velocity: velocity
-            })
+                color: this.getRandomShade('#0d1c01', 0.0, 0.1),
+                velocity: velocity,
+                depth: Random.next(),
+            }
+
+            this._hills.push(hill);
 
             hillX += width;
         }
         
         this.hills
     }
+
 
     update(game, elapsed, totalElapsed) {
         var hillsToKeep = [];
@@ -206,14 +225,20 @@ class Hills extends Effect {
 
         ctx.save();
 
-        for (let i = 0; i < this._hills.length; i++) {
-            const hill = this._hills[i];
+        var hills = this._hills.slice(0).sort((i, j) => i.depth - j.depth);
+        for (let i = 0; i < hills.length; i++) {
+            const hill = hills[i];
             
+            var fillStyle = ctx.createLinearGradient(hill.start + hill.width * 0.5, canvasHeight - hill.height, hill.start + hill.width * 0.5, canvasHeight + 10)
+            fillStyle.addColorStop(0, hill.color);
+            fillStyle.addColorStop(1, 'black');
+
             ctx.beginPath();
-            ctx.fillStyle = hill.color;
+            ctx.fillStyle = fillStyle;
 
             ctx.moveTo(hill.start - hill.width * 0.3, canvasHeight + 10);
-            ctx.lineTo(hill.start + hill.width * 0.5, canvasHeight - hill.height);
+            ctx.lineTo(hill.start + hill.width * 0.3, canvasHeight - hill.height * 0.7);
+            ctx.arcTo(hill.start + hill.width * 0.5, canvasHeight - hill.height, hill.start + hill.width * 0.7, canvasHeight - hill.height * 0.7, hill.width / 6);
             ctx.lineTo(hill.start + hill.width * 1.3, canvasHeight + 10);
 
             ctx.fill();

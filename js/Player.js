@@ -11,6 +11,8 @@ class Player extends Ship{
         this.shootInterval = 250;
         this.lastShot = 0;
 
+        this.makeInvulnerable = true;
+
         this.x = 100;
         this.y = 100;
     }
@@ -25,6 +27,23 @@ class Player extends Ship{
     update(game, elapsed, timeStamp) {
         var accelerationX = 1500.0;
         var accelerationY = 1500.0;
+
+        if (this.makeInvulnerable) {
+            this.isInvulnerable = true;
+            this.invulnerableTimeout = timeStamp + 1000.0;
+            this.makeInvulnerable = false;
+        }
+
+        if (this.isInvulnerable) {
+            this.alpha = (timeStamp % 200.0 < 100) ? 1 : 0;
+
+            console.log(`alpha=${this.alpha}`);
+
+            if (timeStamp > this.invulnerableTimeout) {
+                this.alpha = 1;
+                this.isInvulnerable = false;
+            }
+        }
 
         if ( game.keyboard.key('Space')) {
             this.shoot(game, timeStamp);
@@ -69,7 +88,7 @@ class Player extends Ship{
     }
 
     collide(game, other) {
-        if (other instanceof Shot == false) {
+        if (other instanceof Shot == false && !this.isInvulnerable) {
             super.collide(game, other);
         }
     }

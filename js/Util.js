@@ -93,11 +93,19 @@ class Keyboard {
 
 class Random {
     static getBetween(min, max) {
-        return (max - min) * Math.random() + min;
+        return (max - min) * Random.next() + min;
     }
 
     static getIntBetween(min, max) {
         return Math.floor(this.getBetween(min, max));
+    }
+
+    static next(factor) {
+        return Math.random() * (factor || 1);
+    } 
+
+    static nextInt(upperBound) {
+        return Math.floor(Math.random() * (upperBound || 10));
     }
 }
 

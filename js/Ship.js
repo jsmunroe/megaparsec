@@ -20,7 +20,7 @@ class Ai {
         var zoneHeight = this.game.canvas.height * 0.7;
         var zoneTop = (this.game.canvas.height - zoneHeight) / 2.0;
 
-        ship.y = zoneTop + (Math.random() * zoneHeight);
+        ship.y = zoneTop + Random.next(zoneHeight);
         ship.velocityX = -100.0;
         ship.maxVelocityY = 500.0;
         ship.accelerationX = -0.01;
@@ -28,7 +28,7 @@ class Ai {
 
     update(ship, elapsed, timeStamp) {
         if (elapsed % 10 == 0) {
-            ship.velocityY += Math.random() * 100.0 - 50.0;
+            ship.velocityY += Random.next(100) - 50;
         }
     }
 }
@@ -40,17 +40,17 @@ class SwoopAi {
 
     init(ship) {
         ship.swoopingPhase = 0;
-        ship.swoopingStyle = Math.floor(Math.random() * 3); // 0=swoop, 1=bounce, 2=loop
+        ship.swoopingStyle = Random.nextInt(3); // 0=swoop, 1=bounce, 2=loop
 
         var zoneLeft = this.game.canvas.width * 0.7;
         var zoneWidth = this.game.canvas.width - zoneLeft;
-        ship.x = zoneLeft + (Math.random() * zoneWidth);
+        ship.x = zoneLeft + Random.next(zoneWidth);
         ship.initialY = ship.y = -ship.height * 2.0;
 
         if (ship.swoopingStyle === 0) {
             var zoneHeight = this.game.canvas.height * 0.7;
             var zoneTop = (this.game.canvas.height - zoneHeight) / 2.0;
-            ship.targetY = zoneTop + (Math.random() * zoneHeight);   
+            ship.targetY = zoneTop + Random.next(zoneHeight);   
 
             ship.initialVelocityY = ship.velocityY = 200.0;
             ship.targetVelocityX = -200.0;
@@ -63,7 +63,7 @@ class SwoopAi {
             
             var zoneHeight = (this.game.canvas.height - this.bounceDistance) * 0.7;
             var zoneTop = (this.game.canvas.height - zoneHeight) / 2.0;
-            ship.targetY = zoneTop + (Math.random() * zoneHeight);  
+            ship.targetY = zoneTop + Random.next(zoneHeight);  
             
             ship.velocityY = 200.0;
             ship.velocityX = -150.0;
@@ -78,7 +78,7 @@ class SwoopAi {
 
             var zoneHeight = (this.game.canvas.height - this.loopRadius) * 0.7;
             var zoneTop = (this.game.canvas.height - zoneHeight) / 2.0;
-            ship.targetY = zoneTop + (Math.random() * zoneHeight);  
+            ship.targetY = zoneTop + Random.next(zoneHeight);  
             
             ship.velocityY = 200.0;
             ship.velocityX = -150.0;
@@ -140,7 +140,7 @@ class SwoopAi {
         }
 
         if (elapsed % 10 == 0) {
-            ship.velocityY += Math.random() * 100.0 - 50.0;
+            ship.velocityY += Random.next(100.0) - 50.0;
         }
 
     }
