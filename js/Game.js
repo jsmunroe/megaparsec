@@ -24,6 +24,20 @@ class Game {
         this.addObject(this.player);
     }
 
+    loadNextWave() {
+        if (this.currentWaveIndex == undefined) {
+            this.currentWaveIndex = -1;
+        }
+
+        this.currentWaveIndex++;
+
+        var config = Config.enemies[this.currentWaveIndex % Config.enemies.length]
+        var ai = new Ai[config.ai](this);
+
+        this.enemy = new Wave(config, ai, config.colors.length);
+        this.addObject(this.enemy);
+    }
+
     pause() {
         if (this.isPaused) {
             return;
@@ -48,19 +62,6 @@ class Game {
 
     togglePause() {
         this.isPaused ? this.unpause() : this.pause();
-    }
-
-    loadNextWave() {
-        if (this.currentWaveIndex == undefined) {
-            this.currentWaveCount = 0;
-            this.currentWaveIndex = -1;
-        }
-
-        this.currentWaveCount += 3;
-        this.currentWaveIndex++;
-
-        this.enemy = new Wave(Config.enemies[this.currentWaveIndex % Config.enemies.length], new SwoopAi(this), this.currentWaveCount);
-        this.addObject(this.enemy);
     }
 
     getElapsed(timeStamp) {
@@ -157,7 +158,7 @@ class Game {
     }
 
     collectTheDead() {
-        this._gameObjects.filter(object => !!object.isDead).forEach(object => this.removeObject(object));      
+        this._gameObjects.filter(object => !object || !!object.isDead).forEach(object => this.removeObject(object));      
     }
 
     static build(canvas) {
@@ -195,13 +196,13 @@ class GameObject {
 GameObject.nextId = 0;
 
 class InirtialGameObject extends GameObject {
-    constructor(image) {
+    constructor(image, width, height) {
         super();
 
         if (image) {
-            this._sprite = new Sprite(image, 0, 0, 30, 15);
+            this._sprite = new Sprite(image, 0, 0, width, height);
         } else {
-            this._sprite = { x: 0, y: 0, width: 30, height: 15 }
+            this._sprite = { x: 0, y: 0, width: width, height: height }
         }
 
         this.maxVelocityX = 5000.0;

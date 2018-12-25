@@ -81,8 +81,16 @@ class Canvas {
 
 class Sprite {
     constructor(imagePath, x, y, width, height) {
+        const scale = 0.075;
+
+
         var image = new Image();
         image.src = imagePath;
+        image.onload = () => {
+            this.width = width || (image.width * scale);
+            this.height = height || (image.height * scale);
+        };
+
 
         Sprite._nextId = Sprite._nextId || 0;
 
@@ -100,6 +108,7 @@ class Sprite {
         ctx.save();
 
         ctx.globalAlpha = this.opacity;
+        //console.log(`${this.image.src}`);
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
 
         ctx.restore();

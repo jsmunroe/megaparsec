@@ -2,8 +2,6 @@ class Player extends Ship{
     constructor(game) {
         super(Config.player.image);
 
-        self = this;
-
         this.maxVelocityX = 1000.0;
         this.maxVelocityY = 1000.0;
         this.attenuation = 1.2
@@ -19,7 +17,7 @@ class Player extends Ship{
 
     shoot(game, timeStamp) {
         if (timeStamp - this.lastShot > this.shootInterval) {
-            game.addObject(new Shot(this, 1));
+            game.addObject(new PlayerShot(this));
             this.lastShot = timeStamp;
         }
     }
@@ -88,29 +86,15 @@ class Player extends Ship{
     }
 
     collide(game, other) {
-        if (other instanceof Shot == false && !this.isInvulnerable) {
+        if (other instanceof PlayerShot == false && !this.isInvulnerable) {
             super.collide(game, other);
         }
     }
 }
 
-class Shot extends InirtialGameObject {
-    constructor(origin, direction) {
-        super(Config.player.shot);
-
-        this.height = 3;
-
-        this.x = origin.x,
-        this.y = origin.y + origin.height - this.height; 
-        this.velocityX = direction * 1000.0;
-    }
-
-    update(game, elapsed, timeStamp) {
-        if (this.x > game.canvas.width || this.y < -this.width) {
-            this.isDead = true;
-        }
-
-        super.update(game, elapsed, timeStamp);
+class PlayerShot extends Shot {
+    constructor(origin) {
+        super(origin, Config.player.shot, +1);
     }
 
     collide(game, other) {
@@ -118,10 +102,6 @@ class Shot extends InirtialGameObject {
             return;
         }
 
-        if (other.pointValue) {
-            game.scoreObject(other);
-        }
-        
-        this.isDead = true;
+        super.collide(game, other);
     }
 }
