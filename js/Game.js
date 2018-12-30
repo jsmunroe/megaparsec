@@ -26,7 +26,7 @@ class Game {
 
     loadNextWave() {
         if (this.currentWaveIndex == undefined) {
-            this.currentWaveIndex = -1;
+            this.currentWaveIndex = 1;
         }
 
         this.currentWaveIndex++;

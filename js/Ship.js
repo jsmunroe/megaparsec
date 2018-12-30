@@ -96,12 +96,12 @@ class SwoopAi extends Ai {
         ship.swoopingPhase = 0;
         ship.swoopingStyle = Random.nextInt(3); // 0=swoop, 1=bounce, 2=loop
 
-        var zoneLeft = this.game.canvas.width * 0.7;
-        var zoneWidth = this.game.canvas.width - zoneLeft;
-        ship.x = zoneLeft + Random.next(zoneWidth);
-        ship.initialY = ship.y = -ship.height * 2.0;
-
         if (ship.swoopingStyle === 0) {
+            var zoneLeft = this.game.canvas.width * 0.7;
+            var zoneWidth = this.game.canvas.width - zoneLeft;
+            ship.x = zoneLeft + Random.next(zoneWidth);
+            ship.initialY = ship.y = -ship.height * 2.0;
+            
             var zoneHeight = this.game.canvas.height * 0.7;
             var zoneTop = (this.game.canvas.height - zoneHeight) / 2.0;
             ship.targetY = zoneTop + Random.next(zoneHeight);   
@@ -112,6 +112,11 @@ class SwoopAi extends Ai {
             ship.accelerationX = -0.01;
 
         } else if (ship.swoopingStyle == 1) {
+            var zoneLeft = this.game.canvas.width * 0.7;
+            var zoneWidth = this.game.canvas.width - zoneLeft;
+            ship.x = zoneLeft + Random.next(zoneWidth);
+            ship.initialY = ship.y = -ship.height * 2.0;
+            
             this.bounceDistance = 100;
             this.bounceJolt = 300;
             
@@ -129,6 +134,11 @@ class SwoopAi extends Ai {
 
         } else if (ship.swoopingStyle === 2) {
             this.loopRadius = 100;
+
+            var zoneLeft = (this.game.canvas.width - this.loopRadius) * 0.7;
+            var zoneWidth = this.game.canvas.width - zoneLeft;
+            ship.x = zoneLeft + Random.next(zoneWidth);
+            ship.initialY = ship.y = -ship.height * 2.0;
 
             var zoneHeight = (this.game.canvas.height - this.loopRadius) * 0.7;
             var zoneTop = (this.game.canvas.height - zoneHeight) / 2.0;

@@ -21,9 +21,20 @@ var Config = {
                 './img/enemy2.blue.png',
                 './img/enemy2.cyan.png',
                 './img/enemy2.green.png',
-                './img/enemy2.magenta.png'
+                './img/enemy2.magenta.png',
+                './img/enemy2.red.png'
             ]
-        }
+        },{
+            name: 'Enemy 3',
+            ai: 'swoop',
+            colors: [
+                './img/enemy3.blue.png',
+                './img/enemy3.cyan.png',
+                './img/enemy3.green.png',
+                './img/enemy3.magenta.png',
+                './img/enemy3.red.png'
+            ]
+       }
     ],
     keys: {
         pause: ['KeyP', 'Pause']

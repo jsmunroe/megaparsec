@@ -33,7 +33,7 @@ class Enemy extends Ship {
 
 class EnemyShot extends Shot {
     constructor(origin) {
-        super(origin, Config.player.shot, -1);
+        super(origin, Config.player.shot, -2);
     }
 
     collide(game, other) {
